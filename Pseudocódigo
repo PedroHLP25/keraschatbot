@@ -1,0 +1,168 @@
+----- Dicionário de intents------
+       intents (intenções) 
+
+
+tag: welcome
+patterns(exemplos): oi, bom dia, boa tarde, boa noite, good morning, Hi, hello, Olá
+responses(DoChatBot): Olá, eu sou sua assistente virtual, em que posso te ajudar?
+context: ... #caso queira manipular o contexto das mensagens.
+
+
+tag: climate
+patterns:chuvoso,quente,frio,cold
+responses:Clima no nordeste é sempre tão quente!
+context: ...
+
+tag: colors
+patterns:amarelo,green,azul,vermelho,roxo,branco,black
+responses:Misturar azul com vermelho resulta no roxo!
+context: ...
+
+tag: animals
+patterns:leão,cachorro,águia,baleia,bear
+responses:A baleia azul é o maior animal do mundo!
+context: ...
+
+-----------------Arquivo de criação e treino----------------------
+#Aqui teremos o código para ler os dados de linguagem natural e usar a rede neural sequencial keras para criar nosso modelo.
+
+#primeira vamos otimizar e importar as bibliotecas
+
+importar processamentodelinguagemnatural (nltk)
+importar intenções (json)
+importar operaçõesalgébricas (numpy as np)
+
+importe do nltk tokenização
+importe do nltk raciocíniosemântico
+importe do keras modelos sequenciais  
+
+baixar do nltk (palavrasdainternet)
+
+lematizar = lematizaraspalavrasdainternet()
+
+# inicializaremos nossa lista de palavras, classes, documentos e 
+# definimos quais palavras serão ignoradas
+
+palavras = []
+
+documentos = []
+
+intenções = formatodearquivo.carregar(abrir(intenções.formatodearquivo).leia())  # O formato de arquivo poderia ser json!
+
+# adicionamos as tags em nossa lista de aprendizado
+aprendizado para i em intenções[intenções]
+ignore_palavras = ["!", "@", "#", "$", "%", "*", "?"]
+
+# é feita a leitura do arquivo intents.json e transformado em json
+intenções = formatodearquivo.carregar(abrir(intenções.formatodearquivo).leia())
+
+# percorremos nosso array de objetos
+#loops
+para intenção em intenções['intenções']:
+   para exemplos em intenção['exemplos']:
+   # com ajuda no nltk fazemos aqui a tokenização dos exemplos
+   # e adicionamos na lista de palavras
+
+   palavra = nltk.palavra_tokenização(exemplo)
+   palavras.ampliar(palavra)
+
+   # adiciona aos documentos para identificarmos a tag para a mesma
+
+   documentos.acrescentar (palavras, intenção[tag])
+
+# Lematizamos as palavras ignorando os palavras da lista ignore_palavras
+
+palavras = [lematizar.lematize(w.maisbaixo) para w em palavras se w não em ignore_palavras]  
+
+# classificamos nossas listas
+
+palavras = classificados(lista(definir(palavras)))
+aprendizado = classificados(lista(definir(aprendizado)))
+
+# salvamos as palavras os aprendizados nos arquivos
+
+salvar(palavras,abra(palavras.arquivo)
+salvar(aprendizado,abra(aprendizado.arquivo)  # Esses arquivos podem ser no formato pkl
+
+# inicializamos o treinamento
+treinamento = [] # com um array vazio
+saída_vazia = [0] * tamanho(aprendizado)
+
+#loop
+
+para tamanho em documentos:
+
+# inicializamos o saco de palavras 
+    saco = []  
+
+ # listamos as palavras dos exemplos
+
+ exemplo_palavras = documento[0]
+ # lematizamos cada palavra 
+    # na tentativa de representar palavras relacionadas
+
+ exemplo_palavras= [lematizar.lematize(w.maisbaixo) para w em palavras se w não em ignore_palavras]
+
+ # criamos nosso conjunto de palavras com 1, 
+    # se a correspondência de palavras for encontrada no padrão atual
+
+   #loop
+
+   para palavra em palavras:
+   saco(acrescentar(1)) se a palavra em exemplo_palavras se não saco(acrescentar(0))
+   # saída_linha atuará como uma chave para a lista
+    # onde a saida será 0 para cada tag e 1 para a tag atual
+    saída_linha = lista(saída_vazia)
+    saída_linha[aprendizado.índice(documento(1))] = 1
+
+    treinando.acrescentar(saco,saída_linha)
+    # embaralhamos nosso conjunto de treinamentos e transformamos em numpy array(conjunto algébrico)
+
+    aleatório.embaralhar(treinamento)
+
+    # criamos lista de treino sendo x os exemplos e y as intenções
+    x  = lista(treinando[:0])
+    y  = lista(treinando[:1])
+
+#usaremos o modelo de aprendizado profundo keras chamado sequencial
+
+# Criamos nosso modelo com 3 camadas. 
+# Primeira camada de 128 neurônios, 
+# segunda camada de 64 neurônios e terceira camada de saída 
+# contém número de neurônios igual ao número de intenções para prever a intenção de saída com softmax
+
+modelo = sequencial() 
+modelo.adiciona(denso(128,entrada_forma = tamanho(x[0]) ativação = peso
+modelo.adiciona(empurrarprafora(0.5))
+
+# O modelo é compilado com descida de gradiente estocástica 
+
+# ajustamos e salvamos o modelo
+
+modelo.salve(modelo_gerado)
+
+
+--------------extraindo os dados-------------------------
+
+#Nosso arquivo extract tem 4 funções
+
+()limpar_palavras   #é a responsável por limpar as palavras inseridas
+
+()saco_de_palavras #é a função responsável por criar um pacote de palavras que será usado para as previsões.
+
+()apredizagem_predição #faz a previsão do pacote de palavras, usamos como limite de erro 0.25 para evitarmos overfitting e classificamos esses resultados por força da probabilidade
+
+()pegar_resposta  #é a função que vamos usar depois que fizermos todo o processo acima, com nosso retorno de intenção, verificamos qual as mensagens de retorno do json, usamos o random para pegarmos apenas uma resposta da lista.
+
+------------------------------Para finalizar-----------------------------------------------------------
+
+Antes de executar nosso código, vamos criar 3 arquivos na raiz do projeto (pode ser em pkl e h5)
+Lembre-se de se usar windows instalar o servidor chamado xming
+
+Vamos começar treinando nosso modelo e depois de treinado executamos nosso bot
+
+
+
+
+
+
